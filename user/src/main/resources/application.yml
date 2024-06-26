@@ -28,5 +28,5 @@ springdoc:
 sms:
   signName: 繁星的主页
   templateCode: SMS_465131344
-  accessKeyId: LTAI5t7ydHmfMdASAnk8zJsM
-  accessKeySecret: 7tKqIIxvrVVENvOLcuC5q9z3aD7GQq
+  accessKeyId:
+  accessKeySecret:
