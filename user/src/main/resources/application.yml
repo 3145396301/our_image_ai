@@ -1,0 +1,32 @@
+logging:
+  pattern:
+    dateformat: yyyy年 MM月 dd日 -- HH:mm:ss
+  level:
+    #        root: debug
+    com.xiaoxve.user.mapper: debug
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+server:
+  port: 8081
+  tomcat:
+    max-http-form-post-size: 100MB
+spring:
+  application:
+    name: image_ai
+  datasource:
+    password: 1234
+    url: jdbc:mysql://39.98.109.91:3306/ai_images
+    username: root
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+springdoc:
+  swagger-ui:
+    path: /s
+sms:
+  signName: 繁星的主页
+  templateCode: SMS_465131344
+  accessKeyId:
+  accessKeySecret:
