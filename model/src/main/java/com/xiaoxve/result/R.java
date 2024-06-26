@@ -1,51 +1,43 @@
 package com.xiaoxve.result;
 
+import lombok.Data;
+import lombok.experimental.Accessors;
 import org.apache.http.HttpStatus;
 
-import java.util.HashMap;
-import java.util.Map;
 
-public class R extends HashMap<String, Object> {
+@Data
+@Accessors(chain = true)
+public class R<T>  {
+    private Integer code;
+    private String msg;
+    private T data;
 
-    public R() {
-        put("code", HttpStatus.SC_OK);
-        put("msg", "success");
-    }
-
-    public static R error() {
-        return error(HttpStatus.SC_INTERNAL_SERVER_ERROR, "未知异常，请联系管理员");
-    }
-
-    public static R error(String msg) {
-        return error(HttpStatus.SC_INTERNAL_SERVER_ERROR, msg);
-    }
-
-    public static R error(int code, String msg) {
-        R r = new R();
-        r.put("code", code);
-        r.put("msg", msg);
+    public static <T> R<T> success(T data) {
+        R<T> r = new R<>();
+        r.setCode(HttpStatus.SC_OK);
+        r.setMsg("success");
+        r.setData(data);
         return r;
     }
-
-    public static R ok(String msg) {
-        R r = new R();
-        r.put("msg", msg);
+    public static <T> R<T> success(T data, String msg) {
+        R<T> r = new R<>();
+        r.setCode(HttpStatus.SC_OK);
+        r.setMsg(msg);
+        r.setData(data);
         return r;
     }
-
-    public static R ok(Map<String, Object> map) {
-        R r = new R();
-        r.putAll(map);
+    public static <T> R<T> error(T data) {
+        R<T> r = new R<>();
+        r.setCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        r.setMsg("error");
+        r.setData(data);
         return r;
     }
-
-    public static R ok() {
-        return new R();
+    public static <T> R<T> error(T data, String msg) {
+        R<T> r = new R<>();
+        r.setCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        r.setMsg(msg);
+        r.setData(data);
+        return r;
     }
-
-    public R put(String key, Object value) {
-        super.put(key, value);
-        return this;
-    }
-
 }
