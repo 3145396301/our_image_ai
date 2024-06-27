@@ -57,9 +57,14 @@ public class User implements Serializable {
     private Date registerDate;
 
     /**
-     * 
+     * 角色名称
      */
     private String roleName;
+
+    /**
+     * 手机号码
+     */
+    private String phone;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

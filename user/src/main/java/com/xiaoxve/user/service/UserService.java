@@ -2,6 +2,7 @@ package com.xiaoxve.user.service;
 
 import com.xiaoxve.entity.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.xiaoxve.entity.dto.UserDto;
 
 /**
 * @author 86175
@@ -10,5 +11,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface UserService extends IService<User> {
 
-    void register(User user);
+    void register(UserDto user);
+
+    Boolean checkUsername(String username);
+
+    Boolean login(User user);
 }

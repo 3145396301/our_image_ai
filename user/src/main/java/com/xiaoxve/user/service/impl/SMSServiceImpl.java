@@ -3,10 +3,18 @@ package com.xiaoxve.user.service.impl;
 import com.aliyun.dysmsapi20170525.Client;
 import com.aliyun.dysmsapi20170525.models.SendSmsRequest;
 import com.aliyun.dysmsapi20170525.models.SendSmsResponse;
+import com.xiaoxve.exception.DefinitionException;
 import com.xiaoxve.user.config.SMSConfig;
 import com.xiaoxve.user.service.SMSService;
 import jakarta.annotation.Resource;
+import org.redisson.Redisson;
+import org.redisson.api.RLock;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.Calendar;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class SMSServiceImpl implements SMSService {
@@ -15,7 +23,39 @@ public class SMSServiceImpl implements SMSService {
     @Resource
     private SMSConfig smsConfig;
 
+    @Resource
+    private RedisTemplate redisTemplate;
+
+    @Resource
+    private Redisson redisson;
+
+
+    @Override
     public void sendSMS(String phoneNumber, String code) {
+
+        //判断计数
+        if (Integer.parseInt((String) Objects.requireNonNull(redisTemplate.opsForValue().get("times:" + phoneNumber)))==2) {
+            throw new DefinitionException(400,"今日次数已达上限");
+        }
+
+        RLock lock = redisson.getLock("lock");
+        try {
+            lock.lock();
+
+            // 次数
+            if (redisTemplate.opsForValue().get("times:" + phoneNumber)!= null) {
+                redisTemplate.opsForValue().set("times:"+phoneNumber,2,getNowToNextDaySeconds(),TimeUnit.SECONDS);
+            } else {
+                redisTemplate.opsForValue().set("times:"+phoneNumber,1,getNowToNextDaySeconds(),TimeUnit.SECONDS);
+            }
+
+            // 验证码
+            redisTemplate.opsForValue().set("phone:"+phoneNumber, code, 120, TimeUnit.SECONDS);
+
+        } finally {
+            lock.unlock();
+        }
+
         try {
             SendSmsRequest sendSmsRequest = smsConfig.getSendSmsRequest();
             sendSmsRequest.phoneNumbers = phoneNumber;
@@ -24,5 +64,19 @@ public class SMSServiceImpl implements SMSService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * 获取当前时间到凌晨的秒数
+     * @author y1ng
+     */
+    public static Long getNowToNextDaySeconds() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_YEAR, 1);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return (cal.getTimeInMillis() - System.currentTimeMillis()) / 1000;
     }
 }
