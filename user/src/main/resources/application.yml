@@ -2,8 +2,8 @@ logging:
   pattern:
     dateformat: yyyy年 MM月 dd日 -- HH:mm:ss
   level:
-    #        root: debug
     com.xiaoxve.user.mapper: debug
+    root: debug
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
@@ -34,3 +34,6 @@ sms:
   templateCode: SMS_465131344
   accessKeyId: LTAI5t7ydHmfMdASAnk8zJsM
   accessKeySecret: 7tKqIIxvrVVENvOLcuC5q9z3aD7GQq
+sa-token:
+  is-write-header: true
+  is-read-cookie: false

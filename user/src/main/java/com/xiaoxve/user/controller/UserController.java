@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "用户管理")
 @RestController
 @RequestMapping("/api/user")
+@CrossOrigin
 public class UserController {
 
     @Resource
@@ -31,7 +32,7 @@ public class UserController {
     @GetMapping("/sendSMS/{phoneNumber}")
     private Result sendSMS(@PathVariable("phoneNumber") String phoneNumber) {
         // 生成四位数随机数code
-        String code = String.valueOf((Math.random()*9+1)*1000);
+        String code = String.valueOf((int)((Math.random()*9+1)*1000));
         smsService.sendSMS(phoneNumber,code);
         return Result.success();
     }

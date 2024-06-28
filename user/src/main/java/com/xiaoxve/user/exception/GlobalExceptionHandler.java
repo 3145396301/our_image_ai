@@ -14,6 +14,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = DefinitionException.class)
     @ResponseBody
     public Result bizExceptionHandler(DefinitionException e) {
+        e.printStackTrace();
         return Result.defineError(e);
     }
 
@@ -22,6 +23,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
     public Result exceptionHandler( Exception e) {
+        e.printStackTrace();
         return Result.otherError(ErrorEnum.INTERNAL_SERVER_ERROR);
     }
 }
